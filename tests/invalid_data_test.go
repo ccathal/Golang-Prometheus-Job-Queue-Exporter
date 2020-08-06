@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"exporter/parser"
+	"gitlab.com/surfprace/cathal-go/src/exporter/parser"
 )
 
 func TestInvalidData(t *testing.T) {
