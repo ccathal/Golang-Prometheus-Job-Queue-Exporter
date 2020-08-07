@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 	"reflect"
-	"gitlab.com/surfprace/cathal-go"
+	"gitlab.com/surfprace/cathal-go/exporter/parser"
 )
 
 func TestiDefault(t *testing.T) {

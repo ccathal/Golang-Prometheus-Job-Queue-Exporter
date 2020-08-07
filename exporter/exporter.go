@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"gitlab.com/surfprace/cathal-go/exporter/parser"
 	"github.com/prometheus/common/log"
 	"net/http"
 	"os/exec"
@@ -52,7 +53,7 @@ func queueData() {
 			        log.Fatal(err)
 			}
 
-			mp := ParseQueueMetrics(out)
+			mp := parser.ParseQueueMetrics(out)
 
 			for k := range mp {
 				squeue_jobs := mp[k]

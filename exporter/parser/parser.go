@@ -1,4 +1,4 @@
-package exporter
+package parser
 
 import (
 	"strings"
