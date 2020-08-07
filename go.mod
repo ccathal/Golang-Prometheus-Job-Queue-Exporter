@@ -1,4 +1,4 @@
-module exporter
+module gitlab.com/surfprace/cathal-go
 
 go 1.13
 

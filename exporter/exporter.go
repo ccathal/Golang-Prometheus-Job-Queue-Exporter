@@ -1,4 +1,4 @@
-package main
+package exporter
 
 import (
 	"flag"
@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"io/ioutil"
 	"time"
-	"exporter/parser"
 )
 
 var jobsInQueue = prometheus.NewGaugeVec(
@@ -53,7 +52,7 @@ func queueData() {
 			        log.Fatal(err)
 			}
 
-			mp := parser.ParseQueueMetrics(out)
+			mp := ParseQueueMetrics(out)
 
 			for k := range mp {
 				squeue_jobs := mp[k]
