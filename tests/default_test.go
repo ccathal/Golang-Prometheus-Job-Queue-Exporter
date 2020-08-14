@@ -1,6 +1,7 @@
 package exporter_tests
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -8,7 +9,7 @@ import (
 	"gitlab.com/surfprace/cathal-go/exporter/parser"
 )
 
-func TestiDefault(t *testing.T) {
+func TestDefault(t *testing.T) {
 
 	allegro := map[string]int {
 		"PENDING": 2,
@@ -49,9 +50,15 @@ func TestiDefault(t *testing.T) {
 
 	mp := parser.ParseQueueMetrics(data)
 
-	reflect.DeepEqual(mp["allegro"], allegro)
-	reflect.DeepEqual(mp["lofar"], lofar)
-	reflect.DeepEqual(mp["projectmine"], projectmine)
-	reflect.DeepEqual(mp["sksp"], sksp)
-	reflect.DeepEqual(mp["spexone"], spexone)
+	res1 := reflect.DeepEqual(mp["allegro"], allegro)
+	res2 := reflect.DeepEqual(mp["lofar"], lofar)
+	res3 := reflect.DeepEqual(mp["projectmine"], projectmine)
+	res4 := reflect.DeepEqual(mp["sksp"], sksp)
+	res5 := reflect.DeepEqual(mp["spexone"], spexone)
+
+	fmt.Println("Map 1 Compare Result: ", res1)
+	fmt.Println("Map 2 Compare Result: ", res2)
+	fmt.Println("Map 3 Compare Result: ", res3)
+	fmt.Println("Map 4 Compare Result: ", res4)
+	fmt.Println("Map 5 Compare Result: ", res5)
 }
