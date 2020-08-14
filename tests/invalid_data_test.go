@@ -24,5 +24,5 @@ func TestInvalidData(t *testing.T) {
 			counter += int(squeue_jobs[i])
 		}
 	}
-	assert.Equal(t, counter, int(25))
+	assert.Equal(t, int(25), counter)
 }

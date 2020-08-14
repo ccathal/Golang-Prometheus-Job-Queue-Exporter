@@ -7,19 +7,6 @@ import (
 func ParseQueueMetrics(input []byte) map[string]map[string]int {
 
 	squeue_info :=  make(map[string]map[string]int)
-	states := map[string]int{
-		"PENDING": 0,
-		"RUNNING": 0,
-		"SUSPENDED": 0,
-		"CANCELLED": 0,
-		"COMPLETING" : 0,
-		"COMPLETED": 0,
-		"CONFIGURING" : 0,
-		"FAILED": 0,
-		"TIMEOUT": 0,
-		"PREEMPTED": 0,
-		"NODE_FAIL": 0,
-	}
 
 	lines := strings.Split(string(input), "\n")
 	for _, line := range lines {
@@ -27,13 +14,13 @@ func ParseQueueMetrics(input []byte) map[string]map[string]int {
 		if len(splitted) == 12 {
 			project := splitted[2]
 			state := splitted[9]
-			if _, ok := states[state]; ok {
+			if len(state) > 0 && !strings.ContainsAny(state, " ") {
 				if squeue_info[project] == nil {
 					copy_map := make(map[string]int)
-					for key,value := range states {
-						copy_map[key] = value
-					}
 					squeue_info[project] = copy_map
+				}
+				if _, ok := squeue_info[project][state]; !ok {
+					squeue_info[project][state] = 0
 				}
 				squeue_info[project][state] += 1
 			}
