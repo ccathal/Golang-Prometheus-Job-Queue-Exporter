@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"flag"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -26,13 +27,21 @@ var listenAddress = flag.String(
 	"The address to listen on for HTTP requests.",
 )
 
+//var command = flag.String("command", "squeue", "command for job queue information")
+var command string
+var splitted []string
+
 func init() {
 	prometheus.MustRegister(jobsInQueue)
-		flag.Parse()
-		// The Handler function provides a default handler to expose metrics
-		// via an HTTP server. "/metrics" is the usual endpoint for that.
-		log.Infof("Starting Server: %s", *listenAddress)
-		http.Handle("/metrics", promhttp.Handler())
+
+	flag.StringVar(&command, "command", "squeue", "command for job queue info")
+	flag.Parse()
+	splitted = strings.SplitN(command, " ", 2)
+
+	// The Handler function provides a default handler to expose metrics
+	// via an HTTP server. "/metrics" is the usual endpoint for that.
+	log.Infof("Starting Server: %s", *listenAddress)
+	http.Handle("/metrics", promhttp.Handler())
 }
 
 // Execute the squeue command and return its output
@@ -40,7 +49,13 @@ func queueData() {
 	go func() {
 		for {
 			//cmd := exec.Command("squeue", "-a", "-r", "-h", "-o %A,%T,%r", "--states=all")
-			cmd := exec.Command("python3", "squeue.py")
+			var cmd *exec.Cmd
+			if len(splitted) == 2 {
+				cmd = exec.Command(splitted[0], splitted[1])
+			} else {
+				cmd = exec.Command(command)
+			}
+
 			stdout, err := cmd.StdoutPipe()
 			if err != nil {
 				log.Fatal(err)
