@@ -60,7 +60,7 @@ systemctl status go-hpc-exporter
 The `exporter/exporter.go` file is the main exporter script which contains the `-command` flag to specify the Slurm job queue `squeue` command. By default, the script is running a dummy `squeue` command which will be replaced by the official squeue command. The recommended flag command to run is -
 `squeue --all -h --format=%A,%j,%a,%g,%u,%P,%v,%D,%C,%T,%V,%M`
 
-The `exporter/parser/parser.go` script is called by the main exporter which parses the above Slurm `squeue` command after the main exporter has ran the `squeue` command with `subprocess.Popen()`.
+The `exporter/parser/parser.go` script is called by the main exporter which parses the above Slurm `squeue` command after the main exporter has run the `squeue` command with `subprocess.Popen()`.
 
 A map of key-values pairs is returned to the main exporter where a Prometheus Gauge Metric is created and data is exposed over `http://localhost:8080/`. The metric is expored in the following format: `slurm_group{project_name=<project_name>, job_type=<job_type>}`.
 
