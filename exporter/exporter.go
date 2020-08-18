@@ -13,6 +13,7 @@ import (
         "time"
 )
 
+// prometheus gauge metric
 var jobsInQueue = prometheus.NewGaugeVec(
         prometheus.GaugeOpts{
                 Name: "jobs_in_queue",
@@ -27,16 +28,17 @@ var listenAddress = flag.String(
         "The address to listen on for HTTP requests.",
 )
 
-//var command = flag.String("command", "squeue", "command for job queue information")
 var command string
 var splitted []string
 
 func init() {
-        prometheus.MustRegister(jobsInQueue)
+        // register prometheus gauge metric
+	prometheus.MustRegister(jobsInQueue)
 
         flag.StringVar(&command, "command", "squeue", "command for job queue info")
         flag.Parse()
-        splitted = strings.SplitN(command, " ", 2)
+        // split -command flag into 2 for execution
+	splitted = strings.SplitN(command, " ", 2)
 
         // The Handler function provides a default handler to expose metrics
         // via an HTTP server. "/metrics" is the usual endpoint for that.
@@ -47,7 +49,8 @@ func init() {
 // Execute the squeue command and return its output
 func queueData() {
         go func() {
-                for {
+                for {i
+			// create squeue execution command
                         //cmd := exec.Command("squeue", "-a", "-r", "-h", "-o %A,%T,%r", "--states=all")
                         var cmd *exec.Cmd
                         if len(splitted) == 2 {
@@ -68,20 +71,25 @@ func queueData() {
                                 log.Fatal(err)
                         }
 
+			// parse squeue output returning map
                         mp := parser.ParseQueueMetrics(out)
 
+			// populate gauge maetric with slurm group & job type
                         for k := range mp {
                                 squeue_jobs := mp[k]
                                 for i := range squeue_jobs {
                                         jobsInQueue.With(prometheus.Labels{"job_type": i, "slurm_group": k}).Set(float64(squeue_jobs[i]))
                                 }
                         }
-                        time.Sleep(2 * time.Second)
+			// repeat every x seconds
+                        time.Sleep(5 * time.Second)
                 }
         }()
 }
 
 func main() {
+	// gather squeue data and create prometheus gauge metric
         queueData()
+	// expose gauge metric over http endpoint 8080
         log.Fatal(http.ListenAndServe(*listenAddress, nil))
 }
